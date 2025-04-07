@@ -2,6 +2,10 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+*.iws
+*.iml
+*.ipr
+.idea
 
 ### Eclipse ###
 .apt_generated
@@ -29,3 +33,8 @@ bin/
 .DS_Store
 # Project exclude paths
 /.gradle/
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
