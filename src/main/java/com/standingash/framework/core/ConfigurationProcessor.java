@@ -46,22 +46,22 @@ public class ConfigurationProcessor {
        Spring Framework uses CGLIB proxy to deal with this plus to keep beans singleton.
        I decided to recursively register beans following the dependency-tree instead.
     */
-    private static Object createBean(Class<?> beanType, Object configInstance,
+    private static Object createBean(Class<?> beanClass, Object configInstance,
                                      Map<Class<?>, Method> beanMethods,
                                      BeanContainer beanContainer, Set<Class<?>> visiting) throws InvocationTargetException, IllegalAccessException {
 
         // keeps all beans singleton
-        if (beanContainer.contains(beanType))
-            return beanContainer.getBean(beanType);
+        if (beanContainer.contains(beanClass))
+            return beanContainer.getBean(beanClass);
 
         // avoids circular dependencies
-        if (visiting.contains(beanType))
-            throw new RuntimeException("Circular dependency found: " + beanType);
-        visiting.add(beanType);
+        if (visiting.contains(beanClass))
+            throw new RuntimeException("Circular dependency found: " + beanClass);
+        visiting.add(beanClass);
 
-        Method beanMethod = beanMethods.get(beanType);
+        Method beanMethod = beanMethods.get(beanClass);
         if (beanMethod == null)
-            throw new RuntimeException("@Bean method not found: " + beanType);
+            throw new RuntimeException("@Bean method not found: " + beanClass);
 
         // recursively create bean
         Object[] parameters = Arrays.stream(beanMethod.getParameterTypes())
@@ -74,7 +74,7 @@ public class ConfigurationProcessor {
                 }).toArray();
 
         Object bean = beanMethod.invoke(configInstance, parameters);
-        beanContainer.registerBean(beanType, bean);
+        beanContainer.registerBean(beanClass, bean);
         return bean;
     }
 }

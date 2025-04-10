@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class ComponentScanner {
 
+    // scans all @Component in the base package
     public static Set<Class<?>> scan(String basePackage) {
         Reflections reflections = new Reflections(basePackage);
         return reflections.getTypesAnnotatedWith(Component.class);
