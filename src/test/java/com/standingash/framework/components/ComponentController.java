@@ -1,7 +1,7 @@
 package com.standingash.framework.components;
 
-import com.standingash.framework.annotations.Autowired;
-import com.standingash.framework.annotations.Component;
+import com.standingash.framework.core.annotations.Autowired;
+import com.standingash.framework.core.annotations.Component;
 
 @Component
 public class ComponentController {

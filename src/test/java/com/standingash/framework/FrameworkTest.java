@@ -5,7 +5,6 @@ import com.standingash.framework.components.ComponentController2;
 import com.standingash.framework.components.ComponentController3;
 import com.standingash.framework.components.ComponentService;
 import com.standingash.framework.config.ConfigController;
-import com.standingash.framework.config.ConfigRepository;
 import com.standingash.framework.config.ConfigService;
 import com.standingash.framework.config.TestConfig;
 import com.standingash.framework.core.ApplicationContext;
@@ -16,12 +15,9 @@ import java.util.List;
 
 public class FrameworkTest {
 
-    ConfigRepository configRepository = new ConfigRepository();
-
     // commonly given
     private final ApplicationContext context = new ApplicationContext(
-            "com.standingash.framework",
-            List.of(TestConfig.class)
+            "com.standingash.framework"
     );
 
     @Test

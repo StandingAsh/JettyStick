@@ -1,10 +1,9 @@
 package com.standingash.framework.core;
 
-import com.standingash.framework.annotations.Autowired;
+import com.standingash.framework.core.annotations.Autowired;
+import com.standingash.framework.core.factory.impl.ConstructorBasedBeanFactory;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class BeanContainer {
@@ -23,46 +22,27 @@ public class BeanContainer {
                 continue;
 
             try {
-                Object beanInstance = createInstance(component, new HashSet<>());
+                Object beanInstance = new ConstructorBasedBeanFactory(this)
+                        .createBean(component, new HashSet<>());
                 registerBean(component, beanInstance);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException("Could not register component " + component, e);
             }
         }
+        injectDependencies();
     }
 
-    private Object createInstance(Class<?> beanClass, Set<Class<?>> visiting) throws InvocationTargetException, InstantiationException, IllegalAccessException {
-
-        if(visiting.contains(beanClass))
-            throw new RuntimeException("Circular dependency found: "+beanClass);
-        visiting.add(beanClass);
-
-        // Chooses constructor with most parameters
-        Constructor<?>[] constructors = beanClass.getDeclaredConstructors();
-        Constructor<?> constructor = Arrays.stream(constructors)
-                .max(Comparator.comparingInt(Constructor::getParameterCount))
-                .orElseThrow(() -> new RuntimeException("No constructor found for " + beanClass));
-
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
-        Object[] parameters = new Object[parameterTypes.length];
-
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            Object dependency = beans.get(parameterType);
-
-            if (dependency == null) {
-                dependency = createInstance(parameterType, visiting);
-                registerBean(parameterType, dependency);
-            }
-            parameters[i] = dependency;
-        }
-
-        constructor.setAccessible(true);
-        return constructor.newInstance(parameters);
+    public boolean contains(Class<?> beanClass) {
+        return beans.containsKey(beanClass);
     }
+
+    public <T> T getBean(Class<T> tClass) {
+        return tClass.cast(beans.get(tClass));
+    }
+
 
     // injects dependencies for autowired field
-    public void injectDependencies() {
+    private void injectDependencies() {
 
         for (Object bean : beans.values()) {
             for (Field field : bean.getClass().getDeclaredFields()) {
@@ -72,18 +52,10 @@ public class BeanContainer {
                     try {
                         field.set(bean, dependency);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Could not inject dependency " + field, e);
                     }
                 }
             }
         }
-    }
-
-    public boolean contains(Class<?> beanClass) {
-        return beans.containsKey(beanClass);
-    }
-
-    public <T> T getBean(Class<T> tClass) {
-        return tClass.cast(beans.get(tClass));
     }
 }

@@ -1,9 +1,9 @@
 package com.standingash.framework.core;
 
-import com.standingash.framework.annotations.Bean;
-import com.standingash.framework.annotations.Configuration;
+import com.standingash.framework.core.annotations.Bean;
+import com.standingash.framework.core.annotations.Configuration;
+import com.standingash.framework.core.factory.impl.MethodBasedBeanFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -15,7 +15,6 @@ public class ConfigurationProcessor {
         if (configClass.isAnnotationPresent(Configuration.class)) {
             try {
                 Object configInstance = configClass.getDeclaredConstructor().newInstance();
-                beanContainer.registerBean(configClass, configInstance);
 
                 // stores all @Bean methods
                 Map<Class<?>, Method> beanMethods = new HashMap<>();
@@ -27,54 +26,16 @@ public class ConfigurationProcessor {
 
                 // for each @Bean create and register bean
                 for (Class<?> beanType: beanMethods.keySet()) {
-                    createBean(beanType, configInstance, beanMethods, beanContainer, new HashSet<>());
+                    Method beanMethod = beanMethods.get(beanType);
+                    if (beanMethod == null)
+                        throw new RuntimeException("@Bean method not found: " + beanType);
+
+                    new MethodBasedBeanFactory(beanContainer, configInstance, beanMethod, beanMethods)
+                            .createBean(beanType, new HashSet<>());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException("Error while processing configuration", e);
             }
         }
-    }
-
-    /*
-       First I tried sequentially registering beans using for-each,
-       turned out that this could be a problem.
-
-       Say, a Controller with a Service dependency-injected is about to be bean-registered.
-       But if the Service instance isn't registered before the Controller's turn,
-       the Controller will get a null object injected because it's Service is absent.
-
-       Spring Framework uses CGLIB proxy to deal with this plus to keep beans singleton.
-       I decided to recursively register beans following the dependency-tree instead.
-    */
-    private static Object createBean(Class<?> beanClass, Object configInstance,
-                                     Map<Class<?>, Method> beanMethods,
-                                     BeanContainer beanContainer, Set<Class<?>> visiting) throws InvocationTargetException, IllegalAccessException {
-
-        // keeps all beans singleton
-        if (beanContainer.contains(beanClass))
-            return beanContainer.getBean(beanClass);
-
-        // avoids circular dependencies
-        if (visiting.contains(beanClass))
-            throw new RuntimeException("Circular dependency found: " + beanClass);
-        visiting.add(beanClass);
-
-        Method beanMethod = beanMethods.get(beanClass);
-        if (beanMethod == null)
-            throw new RuntimeException("@Bean method not found: " + beanClass);
-
-        // recursively create bean
-        Object[] parameters = Arrays.stream(beanMethod.getParameterTypes())
-                .map(paramType -> {
-                    try {
-                        return createBean(paramType, configInstance, beanMethods, beanContainer, visiting);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }).toArray();
-
-        Object bean = beanMethod.invoke(configInstance, parameters);
-        beanContainer.registerBean(beanClass, bean);
-        return bean;
     }
 }

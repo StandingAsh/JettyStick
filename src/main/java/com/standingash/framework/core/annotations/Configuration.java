@@ -1,4 +1,4 @@
-package com.standingash.framework.annotations;
+package com.standingash.framework.core.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

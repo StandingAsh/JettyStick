@@ -1,6 +1,6 @@
-package com.standingash.framework.core;
+package com.standingash.framework.core.scanners;
 
-import com.standingash.framework.annotations.Component;
+import com.standingash.framework.core.annotations.Component;
 import org.reflections.Reflections;
 
 import java.util.Set;

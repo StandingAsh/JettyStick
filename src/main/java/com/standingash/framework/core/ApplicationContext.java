@@ -1,23 +1,24 @@
 package com.standingash.framework.core;
 
-import java.util.List;
+import com.standingash.framework.core.scanners.ComponentScanner;
+import com.standingash.framework.core.scanners.ConfigurationScanner;
+
 import java.util.Set;
 
 public class ApplicationContext {
 
     private final BeanContainer beanContainer = new BeanContainer();
 
-    public ApplicationContext(String basePackage, List<Class<?>> configClasses) {
+    public ApplicationContext(String basePackage) {
 
         // handle configuration classes
-        for (Class<?> configClass : configClasses) {
+        Set<Class<?>> configClasses = ConfigurationScanner.scan(basePackage);
+        for (Class<?> configClass : configClasses)
             ConfigurationProcessor.process(configClass, beanContainer);
-        }
 
         // scan components and inject dependencies
         Set<Class<?>> components = ComponentScanner.scan(basePackage);
         beanContainer.registerComponents(components);
-        beanContainer.injectDependencies();
     }
 
     public <T> T getBean(Class<T> tClass) {

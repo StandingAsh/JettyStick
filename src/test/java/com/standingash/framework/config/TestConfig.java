@@ -1,7 +1,7 @@
 package com.standingash.framework.config;
 
-import com.standingash.framework.annotations.Bean;
-import com.standingash.framework.annotations.Configuration;
+import com.standingash.framework.core.annotations.Bean;
+import com.standingash.framework.core.annotations.Configuration;
 
 @Configuration
 public class TestConfig {
