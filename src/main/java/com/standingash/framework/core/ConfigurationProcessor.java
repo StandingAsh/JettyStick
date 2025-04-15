@@ -2,6 +2,7 @@ package com.standingash.framework.core;
 
 import com.standingash.framework.core.annotations.Bean;
 import com.standingash.framework.core.annotations.Configuration;
+import com.standingash.framework.core.exception.MethodNotFoundException;
 import com.standingash.framework.core.factory.impl.MethodBasedBeanFactory;
 
 import java.lang.reflect.Method;
@@ -28,7 +29,7 @@ public class ConfigurationProcessor {
                 for (Class<?> beanType: beanMethods.keySet()) {
                     Method beanMethod = beanMethods.get(beanType);
                     if (beanMethod == null)
-                        throw new RuntimeException("@Bean method not found: " + beanType);
+                        throw new MethodNotFoundException(beanType.getName());
 
                     new MethodBasedBeanFactory(beanContainer, configInstance, beanMethod, beanMethods)
                             .createBean(beanType, new HashSet<>());

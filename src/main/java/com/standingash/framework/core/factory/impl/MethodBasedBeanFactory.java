@@ -1,6 +1,7 @@
 package com.standingash.framework.core.factory.impl;
 
 import com.standingash.framework.core.BeanContainer;
+import com.standingash.framework.core.exception.MethodInvokeFailedException;
 import com.standingash.framework.core.factory.AbstractBeanFactory;
 
 import java.lang.reflect.Method;
@@ -42,7 +43,7 @@ public class MethodBasedBeanFactory extends AbstractBeanFactory {
         try {
             return beanMethod.invoke(configInstance, dependencies);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to invoke @Bean method: " + beanMethod.getName(), e);
+            throw new MethodInvokeFailedException(beanMethod.getName());
         }
     }
 }

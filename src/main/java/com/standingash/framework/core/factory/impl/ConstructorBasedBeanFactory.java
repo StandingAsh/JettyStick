@@ -1,6 +1,8 @@
 package com.standingash.framework.core.factory.impl;
 
 import com.standingash.framework.core.BeanContainer;
+import com.standingash.framework.core.exception.BeanCreationFailedException;
+import com.standingash.framework.core.exception.ConstructorNotFoundException;
 import com.standingash.framework.core.factory.AbstractBeanFactory;
 
 import java.lang.reflect.Constructor;
@@ -18,7 +20,7 @@ public class ConstructorBasedBeanFactory extends AbstractBeanFactory {
     protected Object[] resolveDependencies(Class<?> beanClass, Set<Class<?>> visiting) {
         Constructor<?> constructor = Arrays.stream(beanClass.getDeclaredConstructors())
                 .max(Comparator.comparingInt(Constructor::getParameterCount))
-                .orElseThrow(() -> new RuntimeException("No constructor found for " + beanClass));
+                .orElseThrow(() -> new ConstructorNotFoundException(beanClass.getName()));
 
         return Arrays.stream(constructor.getParameterTypes())
                 .map(param -> this.createBean(param, visiting)).toArray();
@@ -29,11 +31,12 @@ public class ConstructorBasedBeanFactory extends AbstractBeanFactory {
         try {
             Constructor<?> constructor = Arrays.stream(beanClass.getDeclaredConstructors())
                     .max(Comparator.comparingInt(Constructor::getParameterCount))
-                    .orElseThrow(() -> new RuntimeException("No constructor found for " + beanClass));
+                    .orElseThrow(() -> new ConstructorNotFoundException(beanClass.getName()));
+
             constructor.setAccessible(true);
             return constructor.newInstance(dependencies);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create bean instance: " + beanClass, e);
+            throw new BeanCreationFailedException(beanClass.getName());
         }
     }
 }

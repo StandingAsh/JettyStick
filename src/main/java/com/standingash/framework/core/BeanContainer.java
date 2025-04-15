@@ -1,6 +1,8 @@
 package com.standingash.framework.core;
 
 import com.standingash.framework.core.annotations.Autowired;
+import com.standingash.framework.core.exception.ComponentRegistrationFailedException;
+import com.standingash.framework.core.exception.DependencyInjectionFailedException;
 import com.standingash.framework.core.factory.impl.ConstructorBasedBeanFactory;
 
 import java.lang.reflect.Field;
@@ -26,7 +28,7 @@ public class BeanContainer {
                         .createBean(component, new HashSet<>());
                 registerBean(component, beanInstance);
             } catch (Exception e) {
-                throw new RuntimeException("Could not register component " + component, e);
+                throw new ComponentRegistrationFailedException(component.getName());
             }
         }
         injectDependencies();
@@ -52,7 +54,7 @@ public class BeanContainer {
                     try {
                         field.set(bean, dependency);
                     } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Could not inject dependency " + field, e);
+                        throw new DependencyInjectionFailedException(field.getName());
                     }
                 }
             }

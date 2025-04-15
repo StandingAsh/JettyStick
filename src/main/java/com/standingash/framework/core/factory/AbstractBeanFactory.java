@@ -1,6 +1,7 @@
 package com.standingash.framework.core.factory;
 
 import com.standingash.framework.core.BeanContainer;
+import com.standingash.framework.core.exception.CircularDependencyException;
 
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
             return beanContainer.getBean(beanClass);
 
         if (visiting.contains(beanClass))
-            throw new RuntimeException("Circular Dependency Detected: " + beanClass);
+            throw new CircularDependencyException(beanClass.getName());
         visiting.add(beanClass);
 
         Object[] dependencies = resolveDependencies(beanClass, visiting);
