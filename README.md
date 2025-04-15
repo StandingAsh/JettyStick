@@ -1,10 +1,8 @@
 # Jetty Stick
-
 ---
 Jetty Stick is a Spring-like DI & Web Framework for Java.
 
 ### Goal:
-
 
 To provide a lightweight Java Web framework.
 
@@ -14,11 +12,9 @@ To provide a lightweight Java Web framework.
 - Jetty 12
 
 ## Installation
-
 ---
 
 ## Getting Started
-
 ---
 
 ### Simple Example:
