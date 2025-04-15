@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
-group = 'com.example'
+group = 'com.standingash'
 version = '1.0-SNAPSHOT'
+
+application {
+    mainClass = 'com.standingash.jettystick.App'
+}
 
 repositories {
     mavenCentral()
@@ -11,9 +16,23 @@ repositories {
 
 dependencies {
     implementation 'org.reflections:reflections:0.10.2'
-    implementation 'ch.qos.logback:logback-classic:1.5.6'
-    implementation 'ch.qos.logback:logback-core:1.5.6'
+
+    // slf4j + logback
+    implementation 'ch.qos.logback:logback-classic:1.5.13'
+    implementation 'ch.qos.logback:logback-core:1.5.13'
     implementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
+
+    // Jetty
+    implementation 'org.eclipse.jetty:jetty-server:12.0.12'
+    implementation 'org.eclipse.jetty:jetty-http:12.0.12'
+
+    // Jakarta
+    implementation 'org.eclipse.jetty.ee10:jetty-ee10:12.0.12'
+    implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.12'
+
+    testImplementation 'org.eclipse.jetty:jetty-embedded:12.0.6'
+    testImplementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    testImplementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.2.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
