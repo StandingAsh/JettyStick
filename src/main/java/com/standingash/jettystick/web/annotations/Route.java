@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RequestMapping {
-    String value() default "";
+public @interface Route {
+    String path();
+    String method() default "GET";
 }

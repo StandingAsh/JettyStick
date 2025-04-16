@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class ComponentScanner {
 
-    // filters annotations themselves. e.g. @Controller, @Service
+    // filters annotations themselves. e.g. @View, @Service
     public static Set<Class<?>> scan(String basePackage) {
         Reflections reflections = new Reflections(basePackage);
         return reflections.getTypesAnnotatedWith(Component.class)

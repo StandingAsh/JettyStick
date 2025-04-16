@@ -17,9 +17,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
        First I tried sequentially registering beans using for-each,
        turned out that this could be a problem.
 
-       Say, a Controller with a Service dependency-injected is about to be bean-registered.
-       But if the Service instance isn't registered before the Controller's turn,
-       the Controller will get a null object injected because it's Service is absent.
+       Say, a View with a Service dependency-injected is about to be bean-registered.
+       But if the Service instance isn't registered before the View's turn,
+       the View will get a null object injected because it's Service is absent.
 
        Spring Framework uses CGLIB proxy to deal with this plus to keep beans singleton.
        I decided to recursively register beans following the dependency-tree instead.

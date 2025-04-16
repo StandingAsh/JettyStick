@@ -15,25 +15,41 @@ To provide a lightweight Java Web framework.
 
 ## Getting Started
 
-### Simple Example:
+### Simple Usage:
 
 ```java
 import com.standingash.jettystick.*;
 
-@Controller
-public class MyController {
+@View
+public class TestView {
     
-    private final MyService myService;
+    private final TestService testService;
     
-    public MyController myController(MyService myService) {
-        this.myService = myService;
+    public TestView(TestService testService) {
+        this.testService = testService;
     }
     
-    @RequestMapping("/service")
-    public String service() {
-        return myService.hello();
+    @Route(path = "/test", method = "POST")
+    public String test() {
+        Model model = new Model();
+        model.addAttribute("name", testService.test());
+        return new ViewResult("test", model);
     }
 }
+```
+
+```test.html```
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+    <h1>Hello, {{ name }}!</h1>
+</body>
+</html>
 ```
 
 ### Note:

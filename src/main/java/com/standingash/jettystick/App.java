@@ -15,6 +15,7 @@ public class App {
 
         // sets DI context
         String basePackage = "com.standingash.jettystick";
+        String templateRoot = "src/main/resources/templates";
         ApplicationContext context = new ApplicationContext(basePackage);
 
         // sets Jetty server
@@ -25,7 +26,7 @@ public class App {
         handler.setContextPath("/");
 
         // registers DispatcherServlet
-        DispatcherServlet dispatcherServlet = new DispatcherServlet(context, basePackage);
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(context, basePackage, templateRoot);
         handler.addServlet(new ServletHolder(dispatcherServlet), "/*");
 
         // runs Jetty server
