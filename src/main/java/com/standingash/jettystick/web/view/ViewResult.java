@@ -2,21 +2,15 @@ package com.standingash.jettystick.web.view;
 
 import com.standingash.jettystick.web.model.Model;
 
-public class ViewResult {
+public record ViewResult(String viewName, Model model) {
 
-    private final String viewName;
-    private final Model model;
-
-    public ViewResult(String viewName, Model model) {
-        this.viewName = viewName;
-        this.model = model;
-    }
-
-    public String getViewName() {
+    @Override
+    public String viewName() {
         return viewName;
     }
 
-    public Model getModel() {
+    @Override
+    public Model model() {
         return model;
     }
 }
