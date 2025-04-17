@@ -29,7 +29,7 @@ public class TestView {
         this.testService = testService;
     }
     
-    @Route(path = "/test", method = "POST")
+    @Route(path = "/test", method = RouteMethod.POST)
     public String test() {
         Model model = new Model();
         model.addAttribute("name", testService.test());
