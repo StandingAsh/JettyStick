@@ -95,4 +95,12 @@ public class WebTest {
                 "Rendered Template for view test2 not including correct name.");
     }
 
+    @Test
+    public void testPathVariables() throws IOException {
+        String name = "StandingAsh";
+        String response = Request.get(BASE_URL + "/test/" + name)
+                .execute().returnContent().asString();
+        System.out.println(response);
+        Assertions.assertEquals("Hello, " + name + "!", response);
+    }
 }

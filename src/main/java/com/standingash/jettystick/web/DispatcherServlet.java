@@ -2,6 +2,7 @@ package com.standingash.jettystick.web;
 
 import com.standingash.jettystick.core.ApplicationContext;
 import com.standingash.jettystick.core.scanners.ComponentScanner;
+import com.standingash.jettystick.web.annotations.PathVariable;
 import com.standingash.jettystick.web.annotations.View;
 import com.standingash.jettystick.web.annotations.Route;
 import com.standingash.jettystick.web.enums.RouteMethod;
@@ -14,14 +15,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Map;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final HandlerMapping handlerMapping;
+    private final HandlerContainer handlerContainer;
     private final TemplateEngine templateEngine;
 
     public DispatcherServlet(ApplicationContext context, String basePackage, String templateRoot) {
-        this.handlerMapping = new HandlerMapping();
+
+        this.handlerContainer = new HandlerContainer();
         this.templateEngine = new TemplateEngine(templateRoot);
 
         for (Class<?> viewClass : ComponentScanner.scan(basePackage)) {
@@ -34,11 +38,14 @@ public class DispatcherServlet extends HttpServlet {
                     Route route = method.getAnnotation(Route.class);
                     String path = route.path();
                     RouteMethod httpMethod = route.method();
-                    handlerMapping.registerHandler(path, httpMethod,
-                            new HandlerMethod(viewInstance, method));
+                    handlerContainer.registerHandler(path, httpMethod, viewInstance, method);
                 }
             }
         }
+    }
+
+    public DispatcherServlet(ApplicationContext context, String basePackage) {
+        this(context, basePackage, "src/main/resources/templates");
     }
 
     @Override
@@ -47,24 +54,21 @@ public class DispatcherServlet extends HttpServlet {
 
         String path = req.getRequestURI();
         RouteMethod routeMethod = RouteMethod.valueOf(req.getMethod());
-        HandlerMethod handler = handlerMapping.getHandler(path, routeMethod);
+        HandlerExecution execution = handlerContainer.findHandler(path, routeMethod);
 
-        if (!handlerMapping.hasPath(path)) {
+        if (execution == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.getWriter().write("404 Not Found");
             return;
         }
 
-        if (handler == null) {
-            resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            resp.getWriter().write("405 Method Not Allowed");
-            return;
-        }
-
         try {
-            Object result = handler.method().invoke(handler.instance());
-            resp.setStatus(HttpServletResponse.SC_OK);
+            Object[] arguments = resolveMethodArguments(execution.handlerRecord().method(),
+                    execution.pathVariables());
+            Object result = execution.handlerRecord().method()
+                    .invoke(execution.handlerRecord().viewInstance(), arguments);
 
+            resp.setStatus(HttpServletResponse.SC_OK);
             if (result instanceof ViewResult viewResult) {
                 String renderedHtml = templateEngine
                         .render(viewResult.viewName(), viewResult.model());
@@ -79,5 +83,19 @@ public class DispatcherServlet extends HttpServlet {
             resp.getWriter().write("500 Internal Server Error\n");
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private Object[] resolveMethodArguments(Method method,
+                                            Map<String, String> pathVariableMap) {
+
+        Parameter[] parameters = method.getParameters();
+        Object[] arguments = new Object[parameters.length];
+
+        for (int i = 0; i < parameters.length; i++) {
+            PathVariable pathVariable = parameters[i].getAnnotation(PathVariable.class);
+            if (pathVariable != null)
+                arguments[i] = pathVariableMap.get(pathVariable.value());
+        }
+        return arguments;
     }
 }

@@ -10,6 +10,6 @@ public class BeanCreationFailedException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Failed to create bean instance for: " + beanName;
+        return "Failed to create bean viewInstance for: " + beanName;
     }
 }

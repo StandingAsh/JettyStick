@@ -18,7 +18,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
        turned out that this could be a problem.
 
        Say, a View with a Service dependency-injected is about to be bean-registered.
-       But if the Service instance isn't registered before the View's turn,
+       But if the Service viewInstance isn't registered before the View's turn,
        the View will get a null object injected because it's Service is absent.
 
        Spring Framework uses CGLIB proxy to deal with this plus to keep beans singleton.

@@ -30,9 +30,9 @@ public class TestView {
     }
     
     @Route(path = "/test", method = RouteMethod.POST)
-    public String test() {
+    public String test(@Pathvariable("id") String id) {
         Model model = new Model();
-        model.addAttribute("name", testService.test());
+        model.addAttribute("name", testService.getName(id));
         return new ViewResult("test", model);
     }
 }
