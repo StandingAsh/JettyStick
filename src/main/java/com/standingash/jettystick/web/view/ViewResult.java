@@ -2,11 +2,10 @@ package com.standingash.jettystick.web.view;
 
 import com.standingash.jettystick.web.model.Model;
 
-public record ViewResult(String viewName, Model model) {
+public record ViewResult(String templateName, Model model) {
 
-    @Override
-    public String viewName() {
-        return viewName;
+    public String templateName() {
+        return templateName;
     }
 
     @Override

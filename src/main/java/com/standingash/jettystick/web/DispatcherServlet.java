@@ -71,7 +71,7 @@ public class DispatcherServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             if (result instanceof ViewResult viewResult) {
                 String renderedHtml = templateEngine
-                        .render(viewResult.viewName(), viewResult.model());
+                        .render(viewResult.templateName(), viewResult.model());
                 resp.setContentType("text/html;charset=UTF-8");
                 resp.getWriter().write(renderedHtml);
             } else {

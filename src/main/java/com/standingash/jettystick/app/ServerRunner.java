@@ -1,6 +1,7 @@
 package com.standingash.jettystick.app;
 
 import com.standingash.jettystick.core.ApplicationContext;
+import com.standingash.jettystick.web.DispatcherServlet;
 import com.standingash.jettystick.web.exceptions.ServerStartFailedException;
 import jakarta.servlet.http.HttpServlet;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -12,7 +13,8 @@ public class ServerRunner {
 
     private final Server server;
 
-    public ServerRunner(int port, HttpServlet dispatcherServlet) {
+    public ServerRunner(int port, final String BASE_PACKAGE,
+                        final String TEMPLATE_ROOT, ApplicationContext context) {
 
         // sets Jetty server
         server = new Server(port);
@@ -23,6 +25,7 @@ public class ServerRunner {
         server.setHandler(handler);
 
         // registers DispatcherServlet
+        HttpServlet dispatcherServlet = new DispatcherServlet(context, BASE_PACKAGE, TEMPLATE_ROOT);
         handler.addServlet(new ServletHolder(dispatcherServlet), "/*");
     }
 

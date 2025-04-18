@@ -1,10 +1,16 @@
 plugins {
     id 'java'
     id 'application'
+    id 'maven-publish'
 }
 
 group = 'com.standingash'
 version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 application {
     mainClass = 'com.standingash.jettystick.App'
@@ -30,14 +36,22 @@ dependencies {
     implementation 'org.eclipse.jetty.ee10:jetty-ee10:12.0.12'
     implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.12'
 
-    testImplementation 'org.eclipse.jetty:jetty-embedded:12.0.6'
     testImplementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
     testImplementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.2.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            from components.java
+            groupId = 'com.standingash'
+            artifactId = 'jettystick'
+            version = '1.0-SNAPSHOT'
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
