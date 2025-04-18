@@ -30,7 +30,7 @@ public class WebTest {
     @BeforeAll
     public static void startServer() throws Exception {
 
-        server = new Server(0);
+        server = new Server(8080);
 
         ServletContextHandler handler = new ServletContextHandler();
         handler.setContextPath("/");
@@ -41,6 +41,7 @@ public class WebTest {
         server.start();
 
         PORT = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+        System.out.println("Server started on port " + PORT);
         BASE_URL = BASE_URL + PORT;
     }
 
@@ -61,7 +62,7 @@ public class WebTest {
     }
 
     @Test
-    public void test1() throws IOException {
+    public void testView1() throws IOException {
         TestService service = context.getBean(TestService.class);
 
         String response1 = Request.get(BASE_URL + "/test1")
@@ -70,7 +71,7 @@ public class WebTest {
     }
 
     @Test
-    public void test2() throws IOException {
+    public void testView2() throws IOException {
         TestService service = context.getBean(TestService.class);
 
         String response2 = Request.get(BASE_URL + "/test2")
@@ -98,9 +99,15 @@ public class WebTest {
     @Test
     public void testPathVariables() throws IOException {
         String name = "StandingAsh";
-        String response = Request.get(BASE_URL + "/test/" + name)
+        String response = Request.get(BASE_URL + "/test1/" + name)
                 .execute().returnContent().asString();
         System.out.println(response);
         Assertions.assertEquals("Hello, " + name + "!", response);
+
+        String html = Request.post(BASE_URL + "/test2/" + name)
+                .execute().returnContent().asString();
+        System.out.println(html);
+        Assertions.assertTrue(html.contains(name),
+                "Rendered Template for PathVariable Post not including correct name.");
     }
 }

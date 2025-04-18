@@ -32,7 +32,8 @@ public class App {
         // runs Jetty server
         server.setHandler(handler);
         server.start();
-        System.out.println("Server started at http://localhost:" + ((ServerConnector) server.getConnectors()[0]).getLocalPort());
+        System.out.println("Server started at http://localhost:"
+                + ((ServerConnector) server.getConnectors()[0]).getLocalPort());
         server.join();
     }
 }
