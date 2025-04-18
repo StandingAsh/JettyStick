@@ -1,5 +1,6 @@
 package com.standingash.jettystick.web.template;
 
+import com.standingash.jettystick.web.exceptions.TemplateRenderingFailedException;
 import com.standingash.jettystick.web.model.Model;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class TemplateEngine {
             matcher.appendTail(result);
             return result.toString();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to render template", e);
+            throw new TemplateRenderingFailedException(basePath);
         }
     }
 }

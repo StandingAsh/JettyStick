@@ -1,5 +1,6 @@
 package com.standingash.jettystick;
 
+import com.standingash.jettystick.app.ServerRunner;
 import com.standingash.jettystick.core.ApplicationContext;
 import com.standingash.jettystick.web.DispatcherServlet;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -17,23 +18,9 @@ public class App {
         String basePackage = "com.standingash.jettystick";
         String templateRoot = "src/main/resources/templates";
         ApplicationContext context = new ApplicationContext(basePackage);
-
-        // sets Jetty server
-        Server server = new Server(port);
-
-        // sets context handler
-        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        handler.setContextPath("/");
-
-        // registers DispatcherServlet
         DispatcherServlet dispatcherServlet = new DispatcherServlet(context, basePackage, templateRoot);
-        handler.addServlet(new ServletHolder(dispatcherServlet), "/*");
 
-        // runs Jetty server
-        server.setHandler(handler);
-        server.start();
-        System.out.println("Server started at http://localhost:"
-                + ((ServerConnector) server.getConnectors()[0]).getLocalPort());
-        server.join();
+        ServerRunner serverRunner = new ServerRunner(port, dispatcherServlet);
+        serverRunner.start();
     }
 }
