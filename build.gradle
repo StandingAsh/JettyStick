@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-library'
     id 'application'
     id 'maven-publish'
 }
@@ -42,12 +43,16 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
             from components.java
-            groupId = 'com.standingash'
-            artifactId = 'jettystick'
+            groupId = 'com.standingash.jettystick'
+            artifactId = 'jetty-stick'
             version = '1.0-SNAPSHOT'
         }
     }
