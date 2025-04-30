@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.reflections:reflections:0.10.2'
+    implementation 'io.github.classgraph:classgraph:4.8.172'
 
     // slf4j + logback
     implementation 'ch.qos.logback:logback-classic:1.5.13'

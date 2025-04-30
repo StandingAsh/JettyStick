@@ -14,16 +14,15 @@ public class ConfigurationProcessor {
     public static void process(Class<?> configClass, BeanContainer beanContainer) {
 
         if (configClass.isAnnotationPresent(Configuration.class)) {
+
             try {
                 Object configInstance = configClass.getDeclaredConstructor().newInstance();
 
                 // stores all @Bean methods
                 Map<Class<?>, Method> beanMethods = new HashMap<>();
-                for (Method method : configClass.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(Bean.class)) {
+                for (Method method : configClass.getDeclaredMethods())
+                    if (method.isAnnotationPresent(Bean.class))
                         beanMethods.put(method.getReturnType(), method);
-                    }
-                }
 
                 // for each @Bean create and register bean
                 for (Class<?> beanType: beanMethods.keySet()) {

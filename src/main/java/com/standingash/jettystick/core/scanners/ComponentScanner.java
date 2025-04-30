@@ -1,21 +1,35 @@
 package com.standingash.jettystick.core.scanners;
 
 import com.standingash.jettystick.core.annotations.Component;
-import org.reflections.Reflections;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ComponentScanner {
 
     // filters annotations themselves. e.g. @View, @Service
     public static Set<Class<?>> scan(String basePackage) {
-        Reflections reflections = new Reflections(basePackage);
-        return reflections.getTypesAnnotatedWith(Component.class).stream()
-                .filter(clazz -> !clazz.isAnnotation())
-                .filter(ComponentScanner::isComponent)
-                .collect(Collectors.toSet());
+
+        Set<Class<?>> components = new HashSet<>();
+        try (ScanResult scanResult = new ClassGraph()
+                .enableClassInfo()
+                .enableAnnotationInfo()
+                .acceptPackages(basePackage)
+                .scan()) {
+
+            for (ClassInfo classInfo: scanResult.getAllClasses()) {
+                if (!classInfo.isAnnotation()) {
+                    Class<?> clazz = classInfo.loadClass();
+                    if (isComponent(clazz))
+                        components.add(clazz);
+                }
+            }
+        }
+        return components;
     }
 
     private static boolean isComponent(Class<?> clazz) {
