@@ -24,7 +24,7 @@ public class DispatcherServlet extends HttpServlet {
     private final RouteRegistry routeRegistry;
     private final TemplateEngine templateEngine;
 
-    public DispatcherServlet(ApplicationContext context, String basePackage, String templateRoot) {
+    public DispatcherServlet(ApplicationContext context, String templateRoot) {
 
         this.routeRegistry = new RouteRegistry();
         this.templateEngine = new TemplateEngine(templateRoot);
@@ -46,8 +46,8 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    public DispatcherServlet(ApplicationContext context, String basePackage) {
-        this(context, basePackage, "src/main/resources/templates");
+    public DispatcherServlet(ApplicationContext context) {
+        this(context, "src/main/resources/templates");
     }
 
     @Override

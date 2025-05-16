@@ -34,7 +34,7 @@ public class WebTest {
 
         ServletContextHandler handler = new ServletContextHandler();
         handler.setContextPath("/");
-        Servlet dispatcherServlet = new DispatcherServlet(context, BASE_PACKAGE, TEMPLATE_ROOT);
+        Servlet dispatcherServlet = new DispatcherServlet(context, TEMPLATE_ROOT);
         handler.addServlet(new ServletHolder(dispatcherServlet), "/*");
 
         server.setHandler(handler);

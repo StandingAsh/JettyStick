@@ -13,8 +13,7 @@ public class ServerRunner {
 
     private final Server server;
 
-    public ServerRunner(int port, final String BASE_PACKAGE,
-                        final String TEMPLATE_ROOT, ApplicationContext context) {
+    public ServerRunner(int port, final String TEMPLATE_ROOT, ApplicationContext context) {
 
         // sets Jetty server
         server = new Server(port);
@@ -25,7 +24,7 @@ public class ServerRunner {
         server.setHandler(handler);
 
         // registers DispatcherServlet
-        HttpServlet dispatcherServlet = new DispatcherServlet(context, BASE_PACKAGE, TEMPLATE_ROOT);
+        HttpServlet dispatcherServlet = new DispatcherServlet(context, TEMPLATE_ROOT);
         handler.addServlet(new ServletHolder(dispatcherServlet), "/*");
     }
 

@@ -12,7 +12,7 @@ public class App {
         final String TEMPLATE_ROOT = "src/main/resources/templates";
 
         ApplicationContext context = new ApplicationContext(BASE_PACKAGE);
-        ServerRunner serverRunner = new ServerRunner(PORT, BASE_PACKAGE, TEMPLATE_ROOT, context);
+        ServerRunner serverRunner = new ServerRunner(PORT, TEMPLATE_ROOT, context);
 
         serverRunner.start();
     }
