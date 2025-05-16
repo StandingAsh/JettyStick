@@ -1,4 +1,4 @@
-package com.standingash.jettystick.web;
+package com.standingash.jettystick.web.routing;
 
 import com.standingash.jettystick.web.enums.RouteMethod;
 
@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HandlerContainer {
+public class RouteRegistry {
 
-    private final List<HandlerRecord> handlers = new ArrayList<>();
+    private final List<RouteHandler> handlers = new ArrayList<>();
 
     public void registerHandler(String path, RouteMethod routeMethod
             , Object instance, Method method) {
@@ -26,18 +26,18 @@ public class HandlerContainer {
         while (matcher.find())
             pathVariables.add(matcher.group(1));
 
-        handlers.add(new HandlerRecord(instance, method, pattern, pathVariables, routeMethod));
+        handlers.add(new RouteHandler(instance, method, pattern, pathVariables, routeMethod));
     }
 
-    public HandlerExecution findHandler(String path, RouteMethod method) {
+    public RouteExecutionContext findExecutionContext(String path, RouteMethod method) {
 
-        for (HandlerRecord handler : handlers) {
+        for (RouteHandler handler : handlers) {
             Matcher matcher = handler.pathPattern().matcher(path);
             if (matcher.matches() && handler.routeMethod() == method) {
                 Map<String, String> pathVariables = new HashMap<>();
                 for (int i = 0; i < handler.pathVariables().size(); i++)
                     pathVariables.put(handler.pathVariables().get(i), matcher.group(i + 1));
-                return new HandlerExecution(handler, pathVariables);
+                return new RouteExecutionContext(handler, pathVariables);
             }
         }
         return null;

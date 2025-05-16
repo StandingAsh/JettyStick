@@ -42,6 +42,9 @@ public class BeanContainer {
         return tClass.cast(beans.get(tClass));
     }
 
+    public Set<Class<?>> getAllBeans() {
+        return beans.keySet();
+    }
 
     // injects dependencies for autowired field
     private void injectDependencies() {

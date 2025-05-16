@@ -1,11 +1,12 @@
 package com.standingash.jettystick.web;
 
 import com.standingash.jettystick.core.ApplicationContext;
-import com.standingash.jettystick.core.scanners.ComponentScanner;
 import com.standingash.jettystick.web.annotations.PathVariable;
 import com.standingash.jettystick.web.annotations.View;
 import com.standingash.jettystick.web.annotations.Route;
 import com.standingash.jettystick.web.enums.RouteMethod;
+import com.standingash.jettystick.web.routing.RouteRegistry;
+import com.standingash.jettystick.web.routing.RouteExecutionContext;
 import com.standingash.jettystick.web.template.TemplateEngine;
 import com.standingash.jettystick.web.view.ViewResult;
 import jakarta.servlet.ServletException;
@@ -20,25 +21,26 @@ import java.util.Map;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final HandlerContainer handlerContainer;
+    private final RouteRegistry routeRegistry;
     private final TemplateEngine templateEngine;
 
     public DispatcherServlet(ApplicationContext context, String basePackage, String templateRoot) {
 
-        this.handlerContainer = new HandlerContainer();
+        this.routeRegistry = new RouteRegistry();
         this.templateEngine = new TemplateEngine(templateRoot);
 
-        for (Class<?> viewClass : ComponentScanner.scan(basePackage)) {
+        for (Class<?> viewClass : context.getBeans()) {
             if (!viewClass.isAnnotationPresent(View.class))
                 continue;
 
+            // Registers handlers for each @Route method
             Object viewInstance = context.getBean(viewClass);
             for (Method method : viewClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Route.class)) {
                     Route route = method.getAnnotation(Route.class);
                     String path = route.path();
                     RouteMethod httpMethod = route.method();
-                    handlerContainer.registerHandler(path, httpMethod, viewInstance, method);
+                    routeRegistry.registerHandler(path, httpMethod, viewInstance, method);
                 }
             }
         }
@@ -53,22 +55,25 @@ public class DispatcherServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String path = req.getRequestURI();
-        RouteMethod routeMethod = RouteMethod.valueOf(req.getMethod());
-        HandlerExecution execution = handlerContainer.findHandler(path, routeMethod);
+        RouteMethod routeMethod = RouteMethod.valueOf(req.getMethod().toUpperCase());
+        RouteExecutionContext executionContext =
+                routeRegistry.findExecutionContext(path, routeMethod);
 
-        if (execution == null) {
+        if (executionContext == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.getWriter().write("404 Not Found");
             return;
         }
 
         try {
-            Object[] arguments = resolveMethodArguments(execution.handlerRecord().method(),
-                    execution.pathVariables());
-            Object result = execution.handlerRecord().method()
-                    .invoke(execution.handlerRecord().viewInstance(), arguments);
-
+            Object[] arguments = resolveMethodArguments(
+                    executionContext.routeHandler().method(), executionContext.pathVariables()
+            );
+            Object result = executionContext.routeHandler().method()
+                    .invoke(executionContext.routeHandler().viewInstance(), arguments);
             resp.setStatus(HttpServletResponse.SC_OK);
+
+            // Renders HTML template
             if (result instanceof ViewResult viewResult) {
                 String renderedHtml = templateEngine
                         .render(viewResult.templateName(), viewResult.model());
@@ -85,6 +90,7 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
+    // Handle path variables
     private Object[] resolveMethodArguments(Method method,
                                             Map<String, String> pathVariableMap) {
 

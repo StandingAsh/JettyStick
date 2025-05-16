@@ -24,4 +24,8 @@ public class ApplicationContext {
     public <T> T getBean(Class<T> tClass) {
         return beanContainer.getBean(tClass);
     }
+
+    public Set<Class<?>> getBeans() {
+        return beanContainer.getAllBeans();
+    }
 }

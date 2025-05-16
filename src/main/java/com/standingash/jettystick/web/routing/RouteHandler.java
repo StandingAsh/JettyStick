@@ -1,4 +1,4 @@
-package com.standingash.jettystick.web;
+package com.standingash.jettystick.web.routing;
 
 import com.standingash.jettystick.web.enums.RouteMethod;
 
@@ -6,9 +6,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public record HandlerRecord(Object viewInstance, Method method, Pattern pathPattern,
-                            List<String> pathVariables, RouteMethod routeMethod) {
+public record RouteHandler(Object viewInstance, Method method, Pattern pathPattern,
+                           List<String> pathVariables, RouteMethod routeMethod) {
 
+    @Override
     public Object viewInstance() {
         return viewInstance;
     }
