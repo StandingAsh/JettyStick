@@ -8,9 +8,12 @@ import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerRunner {
 
+    private static final Logger log = LoggerFactory.getLogger(ServerRunner.class);
     private final Server server;
 
     public ServerRunner(int port, final String TEMPLATE_ROOT, ApplicationContext context) {
@@ -33,8 +36,8 @@ public class ServerRunner {
         // runs Jetty server
         try{
             server.start();
-            System.out.println("Server started at http://localhost:"
-                    + ((ServerConnector) server.getConnectors()[0]).getLocalPort());
+            log.info("Server started at http://localhost:{}",
+                    ((ServerConnector) server.getConnectors()[0]).getLocalPort());
             server.join();
         } catch (Exception e) {
             throw new ServerStartFailedException(e.getMessage());
