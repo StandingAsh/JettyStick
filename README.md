@@ -4,7 +4,7 @@ Jetty Stick is a Spring-like DI & Web Framework for Java.
 
 ### Goal:
 
-To provide a lightweight Java Web framework.
+To provide a lightweight Java MVT Web framework.
 
 ### Developed with:
 
@@ -30,7 +30,7 @@ public class TestView {
         this.testService = testService;
     }
     
-    @Route(path = "/test", method = RouteMethod.POST)
+    @Route(path = "/test/{id}", method = RouteMethod.GET)
     public String test(@Pathvariable("id") String id) {
         Model model = new Model();
         model.addAttribute("name", testService.getName(id));
