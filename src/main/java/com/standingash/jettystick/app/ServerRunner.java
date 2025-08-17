@@ -2,7 +2,7 @@ package com.standingash.jettystick.app;
 
 import com.standingash.jettystick.core.ApplicationContext;
 import com.standingash.jettystick.web.DispatcherServlet;
-import com.standingash.jettystick.web.exceptions.ServerStartFailedException;
+import com.standingash.jettystick.app.exception.ServerStartFailedException;
 import jakarta.servlet.http.HttpServlet;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;

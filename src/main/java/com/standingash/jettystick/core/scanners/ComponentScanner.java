@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ComponentScanner {
 
-    // filters annotations themselves. e.g. @View, @Service
+    // filters annotations themselves. e.g. @View, @Model
     public static Set<Class<?>> scan(String basePackage) {
 
         Set<Class<?>> components = new HashSet<>();

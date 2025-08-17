@@ -1,7 +1,7 @@
 package com.standingash.jettystick.web.template;
 
-import com.standingash.jettystick.web.exceptions.TemplateRenderingFailedException;
-import com.standingash.jettystick.web.model.Model;
+import com.standingash.jettystick.web.exception.TemplateRenderingFailedException;
+import com.standingash.jettystick.web.view.ViewContext;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +20,7 @@ public class TemplateEngine {
         this.basePath = basePath;
     }
 
-    public String render(String viewName, Model model) {
+    public String render(String viewName, ViewContext viewContext) {
         try {
             String path = basePath + "/" + viewName + ".html";
             String template;
@@ -38,7 +38,7 @@ public class TemplateEngine {
 
             while (matcher.find()) {
                 String key = matcher.group(1);
-                Object value = model.getAttributes().getOrDefault(key, "");
+                Object value = viewContext.getAttributes().getOrDefault(key, "");
                 matcher.appendReplacement(result, Matcher.quoteReplacement(value.toString()));
             }
             matcher.appendTail(result);

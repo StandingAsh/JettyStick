@@ -1,4 +1,4 @@
-package com.standingash.jettystick.web.exceptions;
+package com.standingash.jettystick.app.exception;
 
 public class ServerStartFailedException extends RuntimeException {
 

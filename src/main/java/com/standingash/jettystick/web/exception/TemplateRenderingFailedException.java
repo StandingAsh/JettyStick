@@ -1,4 +1,4 @@
-package com.standingash.jettystick.web.exceptions;
+package com.standingash.jettystick.web.exception;
 
 public class TemplateRenderingFailedException extends RuntimeException {
 

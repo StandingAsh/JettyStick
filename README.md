@@ -32,9 +32,9 @@ public class TestView {
     
     @Route(path = "/test/{id}", method = RouteMethod.GET)
     public String test(@Pathvariable("id") String id) {
-        Model model = new Model();
-        model.addAttribute("name", testService.getName(id));
-        return new ViewResult("test", model);
+        Model viewContext = new Model();
+        viewContext.addAttribute("name", testService.getName(id));
+        return new ViewResult("test", viewContext);
     }
 }
 ```

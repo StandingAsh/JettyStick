@@ -1,9 +1,9 @@
-package com.standingash.jettystick.web.model;
+package com.standingash.jettystick.web.view;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Model {
+public class ViewContext {
 
     private final Map<String, Object> attributes = new HashMap<>();
 
