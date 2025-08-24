@@ -1,6 +1,6 @@
 package com.standingash.jettystick.web.service;
 
-import com.standingash.jettystick.web.annotations.Model;
+import com.standingash.jettystick.orm.annotations.Model;
 
 @Model
 public class TestService {
