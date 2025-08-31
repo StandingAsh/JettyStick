@@ -20,7 +20,7 @@ public class ModelProxy {
                             manager.save((T) args[0]);
                             return null;
                         }
-                        case "all" -> {
+                        case "findAll" -> {
                             return manager.all();
                         }
                         case "delete" -> {
@@ -52,15 +52,14 @@ public class ModelProxy {
                 fieldNames.add(decapitalize(currentCondition.toString()));
                 operators.add("And");
                 currentCondition.setLength(0);
-                i += 3;
+                i += 2;
             } else if (conditionPart.startsWith("Or", i)) {
                 fieldNames.add(decapitalize(currentCondition.toString()));
                 operators.add("Or");
                 currentCondition.setLength(0);
-                i += 2;
+                i += 1;
             } else {
                 currentCondition.append(conditionPart.charAt(i));
-                i++;
             }
         }
         if (!currentCondition.isEmpty()) {

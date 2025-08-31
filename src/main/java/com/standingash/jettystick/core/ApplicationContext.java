@@ -2,6 +2,7 @@ package com.standingash.jettystick.core;
 
 import com.standingash.jettystick.core.scanners.ConfigurationScanner;
 import com.standingash.jettystick.core.scanners.ComponentScanner;
+import com.standingash.jettystick.orm.register.ModelRegistrar;
 
 import java.util.Set;
 
@@ -19,6 +20,9 @@ public class ApplicationContext {
         // scan components and inject dependencies
         Set<Class<?>> components = ComponentScanner.scan(basePackage);
         beanContainer.registerComponents(components);
+
+        // register model managers to all models
+        ModelRegistrar.registerModels(basePackage);
     }
 
     public <T> T getBean(Class<T> tClass) {

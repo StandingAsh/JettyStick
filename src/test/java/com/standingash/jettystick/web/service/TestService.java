@@ -1,8 +1,5 @@
 package com.standingash.jettystick.web.service;
 
-import com.standingash.jettystick.orm.annotations.Model;
-
-@Model
 public class TestService {
 
     public String sayHello() {
