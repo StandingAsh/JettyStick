@@ -28,7 +28,7 @@ public class ModelRegistrar {
                             Class<?> modelClass = classInfo.loadClass();
                             ModelManager<Object> manager = new ModelManager<>();
 
-                            Field objectsField = modelClass.getDeclaredField("objects");
+                            Field objectsField = modelClass.getDeclaredField("repository");
                             objectsField.setAccessible(true);
 
                             @SuppressWarnings("unchecked")

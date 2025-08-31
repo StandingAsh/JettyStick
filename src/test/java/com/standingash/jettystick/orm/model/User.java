@@ -10,7 +10,7 @@ public class User {
     private String name;
     private String userId;
 
-    public static UserManager objects;
+    public static UserRepository repository;
 
     public User(String name, String userId) {
         this.name = name;
@@ -25,7 +25,7 @@ public class User {
         return userId;
     }
 
-    public interface UserManager {
+    public interface UserRepository {
         void save(User user);
         void delete(User user);
         List<User> findAll();

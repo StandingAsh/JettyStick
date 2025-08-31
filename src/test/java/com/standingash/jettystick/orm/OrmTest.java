@@ -17,9 +17,9 @@ public class OrmTest {
     @Test
     public void testSaveAndDelete() {
         // when
-        User.objects.save(new User("name 1", "id_1"));
-        User.objects.save(new User("name 2", "id_2"));
-        List<User> allUsers = User.objects.findAll();
+        User.repository.save(new User("name 1", "id_1"));
+        User.repository.save(new User("name 2", "id_2"));
+        List<User> allUsers = User.repository.findAll();
 
         // then
         System.out.println("testing findAll() ...");
@@ -29,20 +29,20 @@ public class OrmTest {
         }
 
         for (User user : allUsers) {
-            User.objects.delete(user);
+            User.repository.delete(user);
         }
-        allUsers = User.objects.findAll();
+        allUsers = User.repository.findAll();
         Assertions.assertEquals(0, allUsers.size(), "delete() failed");
     }
 
     @Test
     public void testFindBy() {
         // when
-        User.objects.save(new User("name 1", "id_1"));
-        User.objects.save(new User("name 2", "id_2"));
-        List<User> nameUsers = User.objects.findByName("name 1");
-        List<User> nameAndIdUsers = User.objects.findByNameAndUserId("name 2", "id_2");
-        List<User> nameOrIdUsers = User.objects.findByNameOrUserId("name 1", "id_2");
+        User.repository.save(new User("name 1", "id_1"));
+        User.repository.save(new User("name 2", "id_2"));
+        List<User> nameUsers = User.repository.findByName("name 1");
+        List<User> nameAndIdUsers = User.repository.findByNameAndUserId("name 2", "id_2");
+        List<User> nameOrIdUsers = User.repository.findByNameOrUserId("name 1", "id_2");
 
         // then
         System.out.println("testing findByName() ...");
