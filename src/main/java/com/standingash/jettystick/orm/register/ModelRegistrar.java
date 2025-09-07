@@ -26,14 +26,14 @@ public class ModelRegistrar {
                     .forEach(classInfo -> {
                         try {
                             Class<?> modelClass = classInfo.loadClass();
-                            ModelManager<Object> manager = new ModelManager<>();
 
+                            @SuppressWarnings("unchecked")
+                            ModelManager<Object> manager = new ModelManager<>((Class<Object>) modelClass);
                             Field objectsField = modelClass.getDeclaredField("repository");
                             objectsField.setAccessible(true);
 
                             @SuppressWarnings("unchecked")
                             Class<Object> managerInterface = (Class<Object>) objectsField.getType();
-
                             Object managerProxy = ModelProxy.createManager(
                                     managerInterface,
                                     manager

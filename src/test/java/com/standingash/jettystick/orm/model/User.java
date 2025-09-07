@@ -30,7 +30,7 @@ public class User {
         void delete(User user);
         List<User> findAll();
         List<User> findByName(String name);
-        List<User> findByNameAndUserId(String name, String userId);
+        User findByNameAndUserId(String name, String userId);
         List<User> findByNameOrUserId(String name, String userId);
     }
 }

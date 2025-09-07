@@ -31,7 +31,7 @@ public class ModelProxy {
 
                     // findBy mapping
                     if (methodName.startsWith("findBy")) {
-                        return handleFindBy(methodName, args, manager);
+                        return handleFindBy(methodName, args, manager, method.getReturnType());
                     }
 
                     throw new UnsupportedOperationException("Unsupported method: " + methodName);
@@ -39,13 +39,16 @@ public class ModelProxy {
         );
     }
 
-    private static <T> Object handleFindBy(String methodName, Object[] args, ModelManager<T> manager) {
+    private static <T> Object handleFindBy(
+            String methodName, Object[] args,
+            ModelManager<T> manager, Class<?> returnType) {
 
         String conditionPart = methodName.substring(6);
 
         List<String> fieldNames = new ArrayList<>();
         List<String> operators = new ArrayList<>();
 
+        // handles operands(And, Or)
         StringBuilder currentCondition = new StringBuilder();
         for (int i = 0; i < conditionPart.length(); i++) {
             if (conditionPart.startsWith("And", i)) {
@@ -65,10 +68,24 @@ public class ModelProxy {
         if (!currentCondition.isEmpty()) {
             fieldNames.add(decapitalize(currentCondition.toString()));
         }
+
+        List<T> results;
         if (fieldNames.size() == 1) {
-            return manager.filter(fieldNames.get(0), args[0]);
+            results = manager.filter(fieldNames.get(0), args[0]);
+        } else {
+            results = manager.filterComposite(fieldNames, operators, args);
         }
-        return manager.filterComposite(fieldNames, operators, args);
+
+        // handles return type
+        if (returnType.equals(manager.getType())) {
+            return results.isEmpty() ? null : results.get(0);
+        } else if (List.class.isAssignableFrom(returnType)) {
+            return results;
+        }
+        // ... more to extend
+        else {
+            throw new UnsupportedOperationException("Unsupported return type for method: " + methodName);
+        }
     }
 
     private static String decapitalize(String str) {

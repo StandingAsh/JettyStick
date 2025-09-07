@@ -41,7 +41,7 @@ public class OrmTest {
         User.repository.save(new User("name 1", "id_1"));
         User.repository.save(new User("name 2", "id_2"));
         List<User> nameUsers = User.repository.findByName("name 1");
-        List<User> nameAndIdUsers = User.repository.findByNameAndUserId("name 2", "id_2");
+        User nameAndIdUsers = User.repository.findByNameAndUserId("name 2", "id_2");
         List<User> nameOrIdUsers = User.repository.findByNameOrUserId("name 1", "id_2");
 
         // then
@@ -51,9 +51,7 @@ public class OrmTest {
         }
 
         System.out.println("testing findByNameAndUserId() ...");
-        for (User user : nameAndIdUsers) {
-            System.out.println(user.getName());
-        }
+        System.out.println(nameAndIdUsers.getName());
 
         System.out.println("testing findByNameOrUserId() ...");
         for (User user : nameOrIdUsers) {

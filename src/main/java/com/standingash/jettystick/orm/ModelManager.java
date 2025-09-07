@@ -13,6 +13,15 @@ public class ModelManager<T> {
 
     private static final Logger log = LoggerFactory.getLogger(ModelManager.class);
     private final List<T> storage = new ArrayList<>();
+    private final Class<T> type;
+
+    public ModelManager(Class<T> type) {
+        this.type = type;
+    }
+
+    public Class<T> getType() {
+        return type;
+    }
 
     // CRUD methods
     public void save(T model) {
