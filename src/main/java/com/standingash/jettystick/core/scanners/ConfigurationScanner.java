@@ -20,8 +20,8 @@ public class ConfigurationScanner {
                 .acceptPackages(basePackage)
                 .scan()) {
 
-            for (ClassInfo classInfo: scanResult.getClassesWithAnnotation(Configuration.class))
-                if(!classInfo.isAnnotation())
+            for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Configuration.class))
+                if (!classInfo.isAnnotation())
                     configurations.add(classInfo.loadClass());
         }
         return configurations;

@@ -1,6 +1,6 @@
 # Jetty Stick
 
-Jetty Stick is a Spring-like DI & Web Framework for Java.
+Jetty Stick is an annotation-based DI & Web Framework for Java.
 
 ### Goal:
 
@@ -15,31 +15,78 @@ To provide a lightweight Java MVT Web framework.
 
 ## Getting Started
 
-### Simple Usage:
+### Define a Model
 
-```TestView.java```
+```java
+import com.standingash.jettystick.*;
+
+@Model
+public class User {
+
+    private Long id;
+    private String name;
+    
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    
+    public static UserRepository repository;
+
+    // declare your methods here
+    public interface UserRepository {
+        void save(User user);
+        void delete(User user);
+        List<User> findAll();
+        List<User> findById(Long id);
+        User findByNameAndId(String name, Long id);
+        List<User> findByNameOrId(String name, Long id);
+    }
+}
+```
+The @Model class is responsible for...
+- storing data (entity)
+- saving, deleting and searching (repository)
+
+Declare your repository as a static variable in the @Model class. Repository methods are injected automatically.
+
+`save` and `delete` methods are created by default.
+`find` method supports...
+1. `All`, `By` keywords
+2. `And`, `Or` operators
+3. performing either 'findAll' or 'findOne' depending on the return type
+
+### Define a View
+
 ```java
 import com.standingash.jettystick.*;
 
 @View
-public class TestView {
+public class UserView {
     
-    private final TestService testService;
+    private final User user;
     
-    public TestView(TestService testService) {
-        this.testService = testService;
+    public UserView(User user) {
+        this.user = user;
     }
     
-    @Route(path = "/test/{id}", method = RouteMethod.GET)
-    public String test(@Pathvariable("id") String id) {
-        Model viewContext = new Model();
-        viewContext.addAttribute("name", testService.getName(id));
+    @Route(path = "/signup/{id}", method = RouteMethod.GET)
+    public String signUp(@Pathvariable("id") Long id, @Pathvariable("name") String name) {
+        User newUser = new User(id, name);
+        user.repository.save(newUser);
+        
+        ViewContext viewContext = new ViewContext();
+        viewContext.addAttribute("name", newUser.getName());
         return new ViewResult("test", viewContext);
     }
 }
 ```
 
-```test.html```
+### Template
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +100,7 @@ public class TestView {
 </html>
 ```
 
-### Note:
+### Notes:
 Field injection using the ```@Autowired``` annotation is allowed but not recommended because...
 
 1. It might be a cause of circular dependency.

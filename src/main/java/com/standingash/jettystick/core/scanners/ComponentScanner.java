@@ -21,7 +21,7 @@ public class ComponentScanner {
                 .acceptPackages(basePackage)
                 .scan()) {
 
-            for (ClassInfo classInfo: scanResult.getAllClasses()) {
+            for (ClassInfo classInfo : scanResult.getAllClasses()) {
                 if (!classInfo.isAnnotation()) {
                     Class<?> clazz = classInfo.loadClass();
                     if (isComponent(clazz))

@@ -25,7 +25,7 @@ public class ConfigurationProcessor {
                         beanMethods.put(method.getReturnType(), method);
 
                 // for each @Bean create and register bean
-                for (Class<?> beanType: beanMethods.keySet()) {
+                for (Class<?> beanType : beanMethods.keySet()) {
                     Method beanMethod = beanMethods.get(beanType);
                     if (beanMethod == null)
                         throw new MethodNotFoundException(beanType.getName());
