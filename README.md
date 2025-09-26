@@ -57,7 +57,7 @@ Declare your repository as a static variable in the @Model class. Repository met
 `find` method supports...
 1. `All`, `By` keywords
 2. `And`, `Or` operators
-3. performing either 'findAll' or 'findOne' depending on the return type
+3. performing either `findAll` or `findOne` depending on the return type
 
 ### Define a View
 
